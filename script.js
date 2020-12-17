@@ -61,6 +61,26 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const displayMovements = function (movements) {
+  //lets make the container empty so it does not have any html elements inside 👇🏽
+  containerMovements.innerHTML = '';
+
+  movements.forEach(function (movement, index) {
+    const type = movement > 0 ? 'deposit' : 'withdrawal';
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      index + 1
+    } ${type} </div>
+        <div class="movements__value">${movement}</div>
+      </div> 
+   `;
+    //inserting an html by using "insertAdjacentHTML" and it takes 2 perimeters one is ftn & other is the htm element you wanna insert it 😀
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+displayMovements(account1.movements);
+console.log(containerMovements.innerHTML);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
