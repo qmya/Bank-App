@@ -81,6 +81,28 @@ const displayMovements = function (movements) {
 };
 displayMovements(account1.movements);
 console.log(containerMovements.innerHTML);
+
+// const user = 'Steven Thomas Williams'; //stw
+// const username = user.toLowerCase().split(' ');
+// console.log(username);
+
+//change the normal funtion 👉🏽 🏹Function: just remove the function keyword & replaceit with => before {}
+const createUsernames = function (userAccounts) {
+  console.log(userAccounts); //It will give the whole array of accounts with the values of each element too
+
+  userAccounts.forEach(function (userAccount) {
+    userAccount.username = userAccount.owner
+      .toLowerCase()
+      .split(' ') //removes the spaces
+      .map(name => name[0])
+      .join(''); //Change the array and join it will no space
+    console.log(userAccount.username);
+  });
+};
+
+createUsernames(accounts);
+// console.log(createUsername(accounts));
+console.log(accounts);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
