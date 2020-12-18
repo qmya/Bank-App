@@ -82,6 +82,19 @@ const displayMovements = function (movements) {
 displayMovements(account1.movements);
 console.log(containerMovements.innerHTML);
 
+//REDUCE METHOD
+//accumulator acts as SNOWBALL
+const calculateDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (accum, movement, index, arr) {
+    console.log(accum, movement);
+    return accum + movement;
+  }, 0); // 👈🏽 0 is because we want to give Accum an initial value of 0
+  console.log(balance); //3840
+  labelBalance.textContent = `${balance}€`;
+};
+
+console.log(calculateDisplayBalance(account1.movements));
+
 // const user = 'Steven Thomas Williams'; //stw
 // const username = user.toLowerCase().split(' ');
 // console.log(username);
@@ -93,7 +106,7 @@ const createUsernames = function (userAccounts) {
   userAccounts.forEach(function (userAccount) {
     userAccount.username = userAccount.owner
       .toLowerCase()
-      .split(' ') //removes the spaces
+      .split(' ') //create an array
       .map(name => name[0])
       .join(''); //Change the array and join it will no space
     console.log(userAccount.username);
@@ -103,6 +116,7 @@ const createUsernames = function (userAccounts) {
 createUsernames(accounts);
 // console.log(createUsername(accounts));
 console.log(accounts);
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
