@@ -61,6 +61,8 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const euroToUSD = 1.1; //1.23
+
 const displayMovements = function (movements) {
   //lets make the container empty so it does not have any html elements inside 👇🏽
   containerMovements.innerHTML = '';
@@ -95,6 +97,31 @@ const calculateDisplayBalance = function (movements) {
 
 console.log(calculateDisplayBalance(account1.movements));
 
+const calculateDisplaySummary = function (movements) {
+  //Deposits total
+  const incomes = movements
+    .filter(movement => movement > 0)
+    .map(movement => movement * euroToUSD)
+    .reduce((accum, movement) => accum + movement, 0);
+  labelSumIn.textContent = `${Math.round(incomes)}€`;
+  console.log(incomes);
+  //Withdrawals total
+  const outGoing = movements
+    .filter(movement => movement < 0)
+    .map(movement => movement * euroToUSD)
+    .reduce((accum, movement) => Math.abs(accum + movement, 0));
+  labelSumOut.textContent = `${Math.round(outGoing)}€`;
+  //Interest =  1.2% of deposits
+  const interest = movements
+    .filter(movement => movement > 0)
+    .map(deposit => deposit * (1.2 / 100))
+    .filter((int, index, arr) => int >= 1)
+    .reduce((accum, inter) => accum + inter, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+calculateDisplaySummary(account1.movements);
+
 // const user = 'Steven Thomas Williams'; //stw
 // const username = user.toLowerCase().split(' ');
 // console.log(username);
@@ -118,10 +145,9 @@ console.log(accounts);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const euroToUSD = 1.1; //1.23
 const totalDepositsInUSD = movements
-  .filter(mov => {
-    console.log(mov);
+  .filter((mov, index, arr) => {
+    console.log(mov, index, arr);
     return mov > 0;
   })
   .map((mov, index, arr) => {
@@ -130,7 +156,7 @@ const totalDepositsInUSD = movements
   })
   .reduce((accum, mov) => {
     console.log(accum, mov);
-    accum + mov;
+    return accum + mov;
   });
 console.log(totalDepositsInUSD);
 
