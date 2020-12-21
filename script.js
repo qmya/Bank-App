@@ -178,7 +178,12 @@ btnLogin.addEventListener('click', function (e) {
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(' ')[0] //split just take the first name [0]
     }!`;
+
     containerApp.style.opacity = 100;
+    //CLEAR THE INPUT FIELDS
+    inputLoginUsername.value = inputLoginPin.value = '';
+    //remove the input blinking from the pin field:
+    inputLoginPin.blur();
     //display the movements
     displayMovements(currentAccount.movements);
     //display the sumary
