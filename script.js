@@ -74,14 +74,14 @@ const displayMovements = function (movements) {
         <div class="movements__type movements__type--${type}">${
       index + 1
     } ${type} </div>
-        <div class="movements__value">${movement}</div>
+        <div class="movements__value">${movement}€</div>
       </div> 
    `;
     //inserting an html by using "insertAdjacentHTML" and it takes 2 perimeters one is ftn & other is the htm element you wanna insert it 😀
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 console.log(containerMovements.innerHTML);
 
 //REDUCE METHOD
@@ -95,7 +95,7 @@ const calculateDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance}€`;
 };
 
-console.log(calculateDisplayBalance(account1.movements));
+// console.log(calculateDisplayBalance(account1.movements));
 
 const calculateDisplaySummary = function (movements) {
   //Deposits total
@@ -120,7 +120,7 @@ const calculateDisplaySummary = function (movements) {
   labelSumInterest.textContent = `${interest}€`;
 };
 
-calculateDisplaySummary(account1.movements);
+// calculateDisplaySummary(account1.movements);
 
 // const user = 'Steven Thomas Williams'; //stw
 // const username = user.toLowerCase().split(' ');
@@ -160,28 +160,30 @@ const totalDepositsInUSD = movements
   });
 console.log(totalDepositsInUSD);
 
-// const deposit = movements
-//   .filter(mov => mov > 0)
-//   .map((mov, index, arr) => {
-//     console.log(arr, mov);
-//     return mov * euroToUSD;
-//   })
-//   .reduce((accum, mov) => {
-//     console.log(accum, mov);
-//     return accum + mov;
-//   });
+//LOGIN TO GET STARTED
+let currentAccount;
 
-// console.log(deposit);
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// // LECTURES
-
-// const currencies = new Map([
-//   ['USD', 'United States dollar'],
-//   ['EUR', 'Euro'],
-//   ['GBP', 'Pound sterling'],
-// ]);
-
-// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
+//Event Handler
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault(); //Prevent the form from submitting
+  console.log(`login Button is clicked`);
+  //Using find method
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    console.log('LOGIN');
+    //display the UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0] //split just take the first name [0]
+    }!`;
+    containerApp.style.opacity = 100;
+    //display the movements
+    displayMovements(currentAccount.movements);
+    //display the sumary
+    calculateDisplaySummary(currentAccount.movements);
+    //display the balance
+    calculateDisplayBalance(currentAccount.movements);
+  }
+});
