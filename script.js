@@ -114,19 +114,48 @@ const createUsernames = function (userAccounts) {
 };
 
 createUsernames(accounts);
-// console.log(createUsername(accounts));
 console.log(accounts);
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const euroToUSD = 1.1; //1.23
+const totalDepositsInUSD = movements
+  .filter(mov => {
+    console.log(mov);
+    return mov > 0;
+  })
+  .map((mov, index, arr) => {
+    console.log(arr, mov);
+    return mov * euroToUSD;
+  })
+  .reduce((accum, mov) => {
+    console.log(accum, mov);
+    accum + mov;
+  });
+console.log(totalDepositsInUSD);
+
+// const deposit = movements
+//   .filter(mov => mov > 0)
+//   .map((mov, index, arr) => {
+//     console.log(arr, mov);
+//     return mov * euroToUSD;
+//   })
+//   .reduce((accum, mov) => {
+//     console.log(accum, mov);
+//     return accum + mov;
+//   });
+
+// console.log(deposit);
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+// // LECTURES
+
+// const currencies = new Map([
+//   ['USD', 'United States dollar'],
+//   ['EUR', 'Euro'],
+//   ['GBP', 'Pound sterling'],
+// ]);
+
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
