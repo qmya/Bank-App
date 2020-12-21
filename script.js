@@ -97,9 +97,9 @@ const calculateDisplayBalance = function (movements) {
 
 // console.log(calculateDisplayBalance(account1.movements));
 
-const calculateDisplaySummary = function (movements) {
+const calculateDisplaySummary = function (acc) {
   //Deposits total
-  const incomes = movements
+  const incomes = acc.movements
     .filter(movement => movement > 0)
     .map(movement => movement * euroToUSD)
     .reduce((accum, movement) => accum + movement, 0);
@@ -114,7 +114,7 @@ const calculateDisplaySummary = function (movements) {
   //Interest =  1.2% of deposits
   const interest = movements
     .filter(movement => movement > 0)
-    .map(deposit => deposit * (1.2 / 100))
+    .map(deposit => deposit * (acc.interestRate / 100))
     .filter((int, index, arr) => int >= 1)
     .reduce((accum, inter) => accum + inter, 0);
   labelSumInterest.textContent = `${interest}€`;
@@ -187,7 +187,7 @@ btnLogin.addEventListener('click', function (e) {
     //display the movements
     displayMovements(currentAccount.movements);
     //display the sumary
-    calculateDisplaySummary(currentAccount.movements);
+    calculateDisplaySummary(currentAccount);
     //display the balance
     calculateDisplayBalance(currentAccount.movements);
   }
