@@ -271,3 +271,11 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount.movements, !sorted); //!sorted = true
   sorted = !sorted; //false = true and true to false
 });
+
+labelBalance.addEventListener('click', function () {
+  const movementUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', '')) //it will replace the the € with nothing and give you an array when you click on total amount at the top 
+  );
+  console.log(movementUI);
+});
