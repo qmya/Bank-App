@@ -63,11 +63,15 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const euroToUSD = 1.1; //1.23
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   //lets make the container empty so it does not have any html elements inside 👇🏽
   containerMovements.innerHTML = '';
+  //Adding sort
+  const movementSorts = sort
+    ? movements.slice().sort((a, b) => a - b)
+    : movements; //slice is to create a copy of movements array
 
-  movements.forEach(function (movement, index) {
+  movementSorts.forEach(function (movement, index) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -259,4 +263,11 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
-
+//Button for the SORT
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  console.log('Sort button is clicked');
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted); //!sorted = true
+  sorted = !sorted; //false = true and true to false
+});
