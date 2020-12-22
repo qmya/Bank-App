@@ -216,7 +216,23 @@ btnTransfer.addEventListener('click', function (e) {
     updateUI(currentAccount);
   }
 });
+//Request a loan
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('Loan Button is clicked');
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    //"Any" deposits > 10% and when we use "Any" it means that we have to use some
+    //if any of the deposit is true then do this 👇🏽
+    //Add the amount to the current account
+    currentAccount.movements.push(+amount);
+    updateUI(currentAccount);
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+  }
+});
 
+//Delete the account of current user
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   console.log('Delete button');
