@@ -216,3 +216,29 @@ btnTransfer.addEventListener('click', function (e) {
     updateUI(currentAccount);
   }
 });
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('Delete button');
+  //correct user name
+  //correct pin
+  console.log(currentAccount.username, inputCloseUsername.value);
+
+  console.log(currentAccount.pin);
+  console.log(inputClosePin.value);
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    console.log('Yes, both are equal');
+    const index = accounts.findIndex(function (acc) {
+      return acc.username === currentAccount.username;
+    });
+    console.log(index);
+    //Deelete the account
+    accounts.splice(index, 1); //index and a remove 1 array
+    containerApp.style.opacity = 0; //logout the user
+  }
+  //Clear the input field
+  inputCloseUsername.value = inputClosePin.value = '';
+});
