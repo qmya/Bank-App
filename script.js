@@ -258,3 +258,5 @@ btnClose.addEventListener('click', function (e) {
   //Clear the input field
   inputCloseUsername.value = inputClosePin.value = '';
 });
+
+
