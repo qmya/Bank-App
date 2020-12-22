@@ -86,16 +86,13 @@ console.log(containerMovements.innerHTML);
 
 //REDUCE METHOD
 //accumulator acts as SNOWBALL
-const calculateDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (accum, movement, index, arr) {
+const calculateDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce(function (accum, movement) {
     console.log(accum, movement);
     return accum + movement;
   }, 0); // 👈🏽 0 is because we want to give Accum an initial value of 0
-  console.log(balance); //3840
-  labelBalance.textContent = `${balance}€`;
+  labelBalance.textContent = `${acc.balance}€`;
 };
-
-// console.log(calculateDisplayBalance(account1.movements));
 
 const calculateDisplaySummary = function (acc) {
   //Deposits total
@@ -119,8 +116,6 @@ const calculateDisplaySummary = function (acc) {
     .reduce((accum, inter) => accum + inter, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
-
-// calculateDisplaySummary(account1.movements);
 
 // const user = 'Steven Thomas Williams'; //stw
 // const username = user.toLowerCase().split(' ');
@@ -160,6 +155,15 @@ const totalDepositsInUSD = movements
   });
 console.log(totalDepositsInUSD);
 
+//Update UI
+const updateUI = function (acc) {
+  //display the movements
+  displayMovements(acc.movements);
+  //display the balance
+  calculateDisplayBalance(acc);
+  //display the sumary
+  calculateDisplaySummary(acc);
+};
 //LOGIN TO GET STARTED
 let currentAccount;
 
@@ -184,11 +188,31 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     //remove the input blinking from the pin field:
     inputLoginPin.blur();
-    //display the movements
-    displayMovements(currentAccount.movements);
-    //display the sumary
-    calculateDisplaySummary(currentAccount);
-    //display the balance
-    calculateDisplayBalance(currentAccount.movements);
+    updateUI(currentAccount);
+  }
+});
+//Tranfer Money
+btnTransfer.addEventListener('click', function (e) {
+  //Prevent the form from submitting
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  console.log(amount);
+  const recieverAccount = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  console.log(recieverAccount);
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    recieverAccount &&
+    currentAccount.balance >= amount &&
+    recieverAccount?.username !== currentAccount.username
+  ) {
+    // console.log('money transfered');
+    currentAccount.movements.push(-amount); //minus the amount from your account
+    recieverAccount.movements.push(+amount); //add the amount from your account
+    // Update UI
+    updateUI(currentAccount);
   }
 });
