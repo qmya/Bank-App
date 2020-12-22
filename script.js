@@ -227,9 +227,9 @@ btnLoan.addEventListener('click', function (e) {
     //Add the amount to the current account
     currentAccount.movements.push(+amount);
     updateUI(currentAccount);
-    inputLoanAmount.value = '';
-    inputLoanAmount.blur();
   }
+  inputLoanAmount.value = '';
+  inputLoanAmount.blur();
 });
 
 //Delete the account of current user
