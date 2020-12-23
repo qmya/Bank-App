@@ -184,6 +184,25 @@ const updateUI = function (acc) {
 //LOGIN TO GET STARTED
 let currentAccount;
 
+//FAKE ALWAYS LOGGGED IN
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+//Creating the current balance Date
+const now = new Date();
+//Creating a week days
+const weekDays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thrus', 'Fri', 'Sat'];
+const day = weekDays[now.getDay()]; //WeekDay[3] = Wed
+//Now if the date and month is a single digit then we use padStart
+const date = `${now.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
+const month = `${now.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
+const year = now.getFullYear();
+const hour = now.getHours();
+const minutes = now.getMinutes();
+const seconds = now.getSeconds();
+labelDate.textContent = `${day} ${date} / ${month} / ${year}, ${hour}:${minutes}:${seconds}`;
+
 //Event Handler
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); //Prevent the form from submitting
