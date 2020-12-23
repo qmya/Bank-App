@@ -76,21 +76,28 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const euroToUSD = 1.1; //1.23
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (acc, sort = false) {
   //lets make the container empty so it does not have any html elements inside 👇🏽
   containerMovements.innerHTML = '';
   //Adding sort
   const movementSorts = sort
-    ? movements.slice().sort((a, b) => a - b)
-    : movements; //slice is to create a copy of movements array
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements; //slice is to create a copy of movements array
 
   movementSorts.forEach(function (movement, index) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
+    const date = new Date(acc.movementsDates[index]);
+    const day = `${date.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
+    const month = `${date.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
+    const year = date.getFullYear();
+    const displayDate = `${day} / ${month} / ${year}`;
+
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       index + 1
     } ${type} </div>
+    <div class="movements__date">${displayDate}</div>
         <div class="movements__value">${movement}€</div>
       </div> 
    `;
@@ -175,7 +182,7 @@ console.log(totalDepositsInUSD);
 //Update UI
 const updateUI = function (acc) {
   //display the movements
-  displayMovements(acc.movements);
+  displayMovements(acc);
   //display the balance
   calculateDisplayBalance(acc);
   //display the sumary
@@ -188,20 +195,6 @@ let currentAccount;
 currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
-
-//Creating the current balance Date
-const now = new Date();
-//Creating a week days
-const weekDays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thrus', 'Fri', 'Sat'];
-const day = weekDays[now.getDay()]; //WeekDay[3] = Wed
-//Now if the date and month is a single digit then we use padStart
-const date = `${now.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
-const month = `${now.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
-const year = now.getFullYear();
-const hour = now.getHours();
-const minutes = now.getMinutes();
-const seconds = now.getSeconds();
-labelDate.textContent = `${day} ${date} / ${month} / ${year}, ${hour}:${minutes}:${seconds}`;
 
 //Event Handler
 btnLogin.addEventListener('click', function (e) {
@@ -220,6 +213,20 @@ btnLogin.addEventListener('click', function (e) {
     }!`;
 
     containerApp.style.opacity = 100;
+    //Creating the current balance Date
+    const now = new Date();
+    //Creating a week days
+    const weekDays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thrus', 'Fri', 'Sat'];
+    const day = weekDays[now.getDay()]; //WeekDay[3] = Wed
+    //Now if the date and month is a single digit then we use padStart
+    const date = `${now.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
+    const month = `${now.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
+    const year = now.getFullYear();
+    const hour = `${now.getHours()}`.padStart(2, 0);
+    const minutes = `${now.getMinutes()}`.padStart(2, 0);
+
+    labelDate.textContent = `${day} ${date} / ${month} / ${year}, ${hour}:${minutes}`;
+
     //CLEAR THE INPUT FIELDS
     inputLoginUsername.value = inputLoginPin.value = '';
     //remove the input blinking from the pin field:
@@ -232,6 +239,7 @@ btnTransfer.addEventListener('click', function (e) {
   //Prevent the form from submitting
   e.preventDefault();
   const amount = +inputTransferAmount.value;
+
   console.log(amount);
   const recieverAccount = accounts.find(
     acc => acc.username === inputTransferTo.value
@@ -248,6 +256,8 @@ btnTransfer.addEventListener('click', function (e) {
     // console.log('money transfered');
     currentAccount.movements.push(-amount); //minus the amount from your account
     recieverAccount.movements.push(+amount); //add the amount from your account
+    currentAccount.movementsDates.push(new Date().toISOString()); //add transfer date
+    recieverAccount.movementsDates.push(new Date().toISOString()); //add recieved date
     // Update UI
     updateUI(currentAccount);
   }
@@ -262,6 +272,9 @@ btnLoan.addEventListener('click', function (e) {
     //if any of the deposit is true then do this 👇🏽
     //Add the amount to the current account
     currentAccount.movements.push(amount);
+
+    currentAccount.movementsDates.push(new Date().toISOString()); //add loan date
+
     updateUI(currentAccount);
   }
   inputLoanAmount.value = '';
