@@ -19,9 +19,9 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2020-12-12T17:01:17.194Z',
+    '2020-12-16T23:36:17.929Z',
+    '2020-12-22T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -76,6 +76,31 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const euroToUSD = 1.1; //1.23
 
+const formatMovementsDate = (date, locale) => {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  const daysPassed = calcDaysPassed(new Date(), date);
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed < 7) return `${daysPassed} days ago`;
+  if (daysPassed === 7) return '1 week ago';
+  // else {
+  //   console.log(daysPassed);
+  //   const day = `${date.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
+  //   const month = `${date.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
+  //   const year = date.getFullYear();
+  // return `${day} / ${month} / ${year}`;
+  return new Intl.DateTimeFormat(locale).format(date);
+};
+
+//Formatting Movement currency
+const formatCurrency = function (value, locale, currency) {
+  return Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (acc, sort = false) {
   //lets make the container empty so it does not have any html elements inside 👇🏽
   containerMovements.innerHTML = '';
@@ -87,10 +112,13 @@ const displayMovements = function (acc, sort = false) {
   movementSorts.forEach(function (movement, index) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[index]);
-    const day = `${date.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
-    const month = `${date.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
-    const year = date.getFullYear();
-    const displayDate = `${day} / ${month} / ${year}`;
+    const displayDate = formatMovementsDate(date, acc.locale);
+
+    const formattedMovements = formatCurrency(
+      movement,
+      acc.locale,
+      acc.currency
+    );
 
     const html = `
       <div class="movements__row">
@@ -98,9 +126,10 @@ const displayMovements = function (acc, sort = false) {
       index + 1
     } ${type} </div>
     <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${movement}€</div>
+        <div class="movements__value">${formattedMovements}</div> 
       </div> 
    `;
+    //.toFixed(2) : The toFixed() method formats a number using fixed-point notation.
     //inserting an html by using "insertAdjacentHTML" and it takes 2 perimeters one is ftn & other is the htm element you wanna insert it 😀
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -115,7 +144,13 @@ const calculateDisplayBalance = function (acc) {
     console.log(accum, movement);
     return accum + movement;
   }, 0); // 👈🏽 0 is because we want to give Accum an initial value of 0
-  labelBalance.textContent = `${acc.balance}€`;
+  const formattedMovements = formatCurrency(
+    acc.balance,
+    acc.locale,
+    acc.currency
+  );
+
+  labelBalance.textContent = `${formattedMovements}`;
 };
 
 const calculateDisplaySummary = function (acc) {
@@ -124,21 +159,38 @@ const calculateDisplaySummary = function (acc) {
     .filter(movement => movement > 0)
     .map(movement => movement * euroToUSD)
     .reduce((accum, movement) => accum + movement, 0);
-  labelSumIn.textContent = `${Math.round(incomes)}€`;
+  // const formattedMovements = formatCurrency(
+  //   acc.balance,
+  //   acc.locale,
+  //   acc.currency
+  // );
+  labelSumIn.textContent = formatCurrency(
+    Math.round(incomes),
+    acc.locale,
+    acc.currency
+  );
   console.log(incomes);
   //Withdrawals total
   const outGoing = movements
     .filter(movement => movement < 0)
     .map(movement => movement * euroToUSD)
     .reduce((accum, movement) => Math.abs(accum + movement, 0));
-  labelSumOut.textContent = `${Math.round(outGoing)}€`;
+  labelSumOut.textContent = formatCurrency(
+    Math.round(outGoing),
+    acc.locale,
+    acc.currency
+  );
   //Interest =  1.2% of deposits
   const interest = movements
     .filter(movement => movement > 0)
     .map(deposit => deposit * (acc.interestRate / 100))
     .filter((int, index, arr) => int >= 1)
     .reduce((accum, inter) => accum + inter, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = formatCurrency(
+    interest,
+    acc.locale,
+    acc.currency
+  );
 };
 
 // const user = 'Steven Thomas Williams'; //stw
@@ -192,9 +244,9 @@ const updateUI = function (acc) {
 let currentAccount;
 
 //FAKE ALWAYS LOGGGED IN
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 //Event Handler
 btnLogin.addEventListener('click', function (e) {
@@ -214,18 +266,36 @@ btnLogin.addEventListener('click', function (e) {
 
     containerApp.style.opacity = 100;
     //Creating the current balance Date
-    const now = new Date();
+    // const now = new Date();
     //Creating a week days
-    const weekDays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thrus', 'Fri', 'Sat'];
-    const day = weekDays[now.getDay()]; //WeekDay[3] = Wed
-    //Now if the date and month is a single digit then we use padStart
-    const date = `${now.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
-    const month = `${now.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
-    const year = now.getFullYear();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const minutes = `${now.getMinutes()}`.padStart(2, 0);
-
-    labelDate.textContent = `${day} ${date} / ${month} / ${year}, ${hour}:${minutes}`;
+    // const weekDays = ['Sun', 'Mon', 'Tues', 'Wed', 'Thrus', 'Fri', 'Sat'];
+    // const day = weekDays[now.getDay()]; //WeekDay[3] = Wed
+    // //Now if the date and month is a single digit then we use padStart
+    // const date = `${now.getDate()}`.padStart(2, '0'); //Will add zero at the start and maximum digit will be 2
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0); //Will add zero at the start and maximum digit  will be 2
+    // const year = now.getFullYear();
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const minutes = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${date} / ${month} / ${year}`;
+    //Experimenting API
+    const now = new Date();
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: '2-digit', //08 not only 8
+      month: 'long', //not like 12 it will give December , 'short' 👉🏽Dec
+      year: 'numeric', //2020 not just 20
+      weekday: 'long', // Wednesday , 'short' 👉🏽 Wed
+    };
+    //Let suppose I want to put local time
+    //Use this navigator if your api doesnot have a local time 👇🏽
+    // const locale = navigator.language;
+    // console.log(locale); //en-US
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now); //International time format of english US
+    // labelDate.textContent = new Intl.DateTimeFormat('en-US', options).format(now); //International time format of english US
 
     //CLEAR THE INPUT FIELDS
     inputLoginUsername.value = inputLoginPin.value = '';
