@@ -243,10 +243,28 @@ const updateUI = function (acc) {
 //LOGIN TO GET STARTED
 let currentAccount;
 
-//FAKE ALWAYS LOGGGED IN
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = 100;
+//Logout Timer
+const startLogOutTimer = function () {
+  //set the time to 5 minutes
+  let time = 10;
+  const timer = setInterval(() => {
+    //Change the time to minutes and seconds
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    //each call print the remaining time
+    labelTimer.textContent = `${min}:${sec}`;
+    //decrease it 1 sec
+    time--;
+    //when the time is equal to 0 logout the person
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Login Again, ${
+        currentAccount.owner.split(' ')[0] //split just take the first name [0]
+      }!`;
+      containerApp.style.opacity = 0;
+    }
+  }, 1000); //call the time every second
+};
 
 //Event Handler
 btnLogin.addEventListener('click', function (e) {
@@ -300,7 +318,9 @@ btnLogin.addEventListener('click', function (e) {
     //CLEAR THE INPUT FIELDS
     inputLoginUsername.value = inputLoginPin.value = '';
     //remove the input blinking from the pin field:
+
     inputLoginPin.blur();
+    startLogOutTimer();
     updateUI(currentAccount);
   }
 });
