@@ -341,11 +341,14 @@ btnLoan.addEventListener('click', function (e) {
     //"Any" deposits > 10% and when we use "Any" it means that we have to use some
     //if any of the deposit is true then do this 👇🏽
     //Add the amount to the current account
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      //Loan to get accepted by the bank in 2500mseconds or 2.5 seconds
+      currentAccount.movements.push(amount);
 
-    currentAccount.movementsDates.push(new Date().toISOString()); //add loan date
+      currentAccount.movementsDates.push(new Date().toISOString()); //add loan date
 
-    updateUI(currentAccount);
+      updateUI(currentAccount);
+    }, 2500);
   }
   inputLoanAmount.value = '';
   inputLoanAmount.blur();
