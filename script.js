@@ -357,6 +357,7 @@ btnTransfer.addEventListener('click', function (e) {
     //Reset timer
     clearInterval(timer);
     timer = startLogOutTimer();
+  }
 });
 //Request a loan
 btnLoan.addEventListener('click', function (e) {
